@@ -1,6 +1,5 @@
 const Sequelize = require('sequelize');
 const dotenv = require('dotenv');
-
 dotenv.config();
 
 const sequelize = new Sequelize(
@@ -9,12 +8,13 @@ const sequelize = new Sequelize(
   process.env.DB_PASSWORD,
   {
     host: process.env.DB_HOST,
-    dialect: process.env.DB_DIALECT,
+    dialect: 'mysql',
   }
 );
 
-const User = require('./User');
-const Post = require('./Post');
+const User = require('./User')(sequelize, Sequelize.DataTypes);
+const Post = require('./Post')(sequelize, Sequelize.DataTypes);
+const Comment = require('./Comment')(sequelize, Sequelize.DataTypes);
 
 User.hasMany(Post, {
   foreignKey: 'user_id',
@@ -25,4 +25,22 @@ Post.belongsTo(User, {
   foreignKey: 'user_id',
 });
 
-module.exports = { User, Post, sequelize };
+Post.hasMany(Comment, {
+  foreignKey: 'post_id',
+  onDelete: 'CASCADE',
+});
+
+Comment.belongsTo(Post, {
+  foreignKey: 'post_id',
+});
+
+Comment.belongsTo(User, {
+  foreignKey: 'user_id',
+});
+
+User.hasMany(Comment, {
+  foreignKey: 'user_id',
+  onDelete: 'CASCADE',
+});
+
+module.exports = { User, Post, Comment, sequelize };

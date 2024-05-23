@@ -1,0 +1,89 @@
+{{#if logged_in}}
+  <h1>Welcome to Your Dashboard, {{username}}!</h1>
+  <h2>Your Posts:</h2>
+  <button id="new-post">New Post</button>
+  <section id="posts">
+    {{#each posts}}
+      <article>
+        <h3>{{this.title}}</h3>
+        <p>{{this.content}}</p>
+        <button class="edit-post" data-id="{{this.id}}">Edit</button>
+        <button class="delete-post" data-id="{{this.id}}">Delete</button>
+      </article>
+    {{/each}}
+  </section>
+
+  <form id="post-form" style="display:none;">
+    <input type="text" name="title" placeholder="Post Title">
+    <textarea name="content" placeholder="Post Content"></textarea>
+    <button type="submit">Save</button>
+  </form>
+{{else}}
+  <p>You need to <a href="/login">log in</a> to view this page.</p>
+{{/if}}
+
+<script>
+  document.getElementById('new-post').addEventListener('click', () => {
+    document.getElementById('post-form').style.display = 'block';
+  });
+
+  document.querySelectorAll('.edit-post').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const id = event.target.getAttribute('data-id');
+      const response = await fetch(`/api/posts/${id}`);
+      const post = await response.json();
+      document.getElementById('post-form').style.display = 'block';
+      document.querySelector('[name="title"]').value = post.title;
+      document.querySelector('[name="content"]').value = post.content;
+      document.getElementById('post-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        const title = document.querySelector('[name="title"]').value.trim();
+        const content = document.querySelector('[name="content"]').value.trim();
+        if (title && content) {
+          await fetch(`/api/posts/${id}`, {
+            method: 'PUT',
+            body: JSON.stringify({ title, content }),
+            headers: { 'Content-Type': 'application/json' },
+          });
+          document.location.reload();
+        }
+      });
+    });
+  });
+
+  document.querySelectorAll('.delete-post').forEach(button => {
+    button.addEventListener('click', async (event) => {
+      const id = event.target.getAttribute('data-id');
+      const response = await fetch(`/api/posts/${id}`, {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        document.location.reload();
+      } else {
+        alert('Failed to delete post.');
+      }
+    });
+  });
+
+  document.getElementById('post-form').addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const title = document.querySelector('[name="title"]').value.trim();
+    const content = document.querySelector('[name="content"]').value.trim();
+    if (title && content) {
+      const response = await fetch('/api/posts', {
+        method: 'POST',
+        body: JSON.stringify({ title, content }),
+        headers: { 'Content-Type': 'application/json' },
+      });
+      if (response.ok) {
+        document.getElementById('post-form').reset(); // Clear form
+        document.getElementById('post-form').style.display = 'none'; // Hide form
+        document.location.reload(); // Reload the page to show the new post
+      } else {
+        alert('Failed to create new post.');
+      }
+    } else {
+      alert('Please enter both title and content.');
+    }
+  });
+</script>
