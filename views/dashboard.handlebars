@@ -1,89 +1,103 @@
 {{#if logged_in}}
   <h1>Welcome to Your Dashboard, {{username}}!</h1>
-  <h2>Your Posts:</h2>
-  <button id="new-post">New Post</button>
-  <section id="posts">
-    {{#each posts}}
-      <article>
-        <h3>{{this.title}}</h3>
-        <p>{{this.content}}</p>
-        <button class="edit-post" data-id="{{this.id}}">Edit</button>
-        <button class="delete-post" data-id="{{this.id}}">Delete</button>
-      </article>
-    {{/each}}
-  </section>
+  <h2>Your Posts</h2>
+    <button id="new-post">New Post</button>
+    <section id="posts">
+        {{#each posts}}
+            <article data-id="{{this.id}}">
+                <h3>{{this.title}}</h3>
+                <p>{{this.content}}</p>
+                <button class="edit-post" data-id="{{this.id}}">Edit</button>
+                <button class="delete-post" data-id="{{this.id}}">Delete</button>
+            </article>
+        {{/each}}
+    </section>
 
-  <form id="post-form" style="display:none;">
-    <input type="text" name="title" placeholder="Post Title">
-    <textarea name="content" placeholder="Post Content"></textarea>
-    <button type="submit">Save</button>
-  </form>
+    <form id="post-form" style="display:none;">
+        <input type="text" name="title" placeholder="Post Title">
+        <textarea name="content" placeholder="Post Content"></textarea>
+        <button type="submit">Save</button>
+    </form>
 {{else}}
-  <p>You need to <a href="/login">log in</a> to view this page.</p>
+    <p>You need to <a href="/login">log in</a> to view this page.</p>
 {{/if}}
 
 <script>
-  document.getElementById('new-post').addEventListener('click', () => {
-    document.getElementById('post-form').style.display = 'block';
-  });
-
-  document.querySelectorAll('.edit-post').forEach(button => {
-    button.addEventListener('click', async (event) => {
-      const id = event.target.getAttribute('data-id');
-      const response = await fetch(`/api/posts/${id}`);
-      const post = await response.json();
-      document.getElementById('post-form').style.display = 'block';
-      document.querySelector('[name="title"]').value = post.title;
-      document.querySelector('[name="content"]').value = post.content;
-      document.getElementById('post-form').addEventListener('submit', async (event) => {
+document.getElementById('new-post').addEventListener('click', () => {
+    const form = document.getElementById('post-form');
+    form.style.display = 'block';
+    form.onsubmit = async (event) => {
         event.preventDefault();
         const title = document.querySelector('[name="title"]').value.trim();
         const content = document.querySelector('[name="content"]').value.trim();
         if (title && content) {
-          await fetch(`/api/posts/${id}`, {
-            method: 'PUT',
-            body: JSON.stringify({ title, content }),
-            headers: { 'Content-Type': 'application/json' },
-          });
-          document.location.reload();
+            const response = await fetch('/api/posts', {
+                method: 'POST',
+                body: JSON.stringify({ title, content }),
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (response.ok) {
+                document.location.reload();
+            } else {
+                alert('Failed to create post.');
+            }
         }
-      });
-    });
-  });
+    };
+});
 
-  document.querySelectorAll('.delete-post').forEach(button => {
+document.querySelectorAll('.edit-post').forEach(button => {
     button.addEventListener('click', async (event) => {
-      const id = event.target.getAttribute('data-id');
-      const response = await fetch(`/api/posts/${id}`, {
-        method: 'DELETE',
-      });
-      if (response.ok) {
-        document.location.reload();
-      } else {
-        alert('Failed to delete post.');
-      }
-    });
-  });
+        const id = event.target.getAttribute('data-id');
+        const response = await fetch(`/api/posts/${id}`);
+        if (!response.ok) {
+            alert('Failed to fetch post.');
+            return;
+        }
+        const post = await response.json();
+        const form = document.getElementById('post-form');
+        form.style.display = 'block';
+        document.querySelector('[name="title"]').value = post.title;
+        document.querySelector('[name="content"]').value = post.content;
 
-  document.getElementById('post-form').addEventListener('submit', async (event) => {
-    event.preventDefault();
-    const title = document.querySelector('[name="title"]').value.trim();
-    const content = document.querySelector('[name="content"]').value.trim();
-    if (title && content) {
-      const response = await fetch('/api/posts', {
-        method: 'POST',
-        body: JSON.stringify({ title, content }),
-        headers: { 'Content-Type': 'application/json' },
-      });
-      if (response.ok) {
-        document.getElementById('post-form').reset(); // Clear form
-        document.getElementById('post-form').style.display = 'none'; // Hide form
-        document.location.reload(); // Reload the page to show the new post
-      } else {
-        alert('Failed to create new post.');
-      }
-    } else {
-      alert('Please enter both title and content.');
-    }
-  });
+        // Remove any existing submit event listeners to prevent multiple handlers
+        const newForm = form.cloneNode(true);
+        form.parentNode.replaceChild(newForm, form);
+
+        newForm.onsubmit = async (event) => {
+            event.preventDefault();
+            const title = document.querySelector('[name="title"]').value.trim();
+            const content = document.querySelector('[name="content"]').value.trim();
+            if (title && content) {
+                const updateResponse = await fetch(`/api/posts/${id}`, {
+                    method: 'PUT',
+                    body: JSON.stringify({ title, content }),
+                    headers: { 'Content-Type': 'application/json' },
+                });
+                if (updateResponse.ok) {
+                    const updatedPost = await updateResponse.json();
+                    const postElement = document.querySelector(`article[data-id="${id}"]`);
+                    postElement.querySelector('h3').innerText = updatedPost.title;
+                    postElement.querySelector('p').innerText = updatedPost.content;
+                    newForm.style.display = 'none';
+                } else {
+                    alert('Failed to update post.');
+                }
+            }
+        };
+    });
+});
+
+document.querySelectorAll('.delete-post').forEach(button => {
+    button.addEventListener('click', async (event) => {
+        const id = event.target.getAttribute('data-id');
+        const response = await fetch(`/api/posts/${id}`, {
+            method: 'DELETE',
+        });
+        if (response.ok) {
+            document.querySelector(`article[data-id="${id}"]`).remove();
+        } else {
+            alert('Failed to delete post.');
+        }
+    });
+});
 </script>
