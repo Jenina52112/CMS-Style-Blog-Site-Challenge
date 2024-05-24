@@ -1,103 +1,25 @@
 {{#if logged_in}}
   <h1>Welcome to Your Dashboard, {{username}}!</h1>
-  <h2>Your Posts</h2>
+  <div class="container"><h2>Your Posts</h2>
     <button id="new-post">New Post</button>
     <section id="posts">
         {{#each posts}}
-            <article data-id="{{this.id}}">
-                <h3>{{this.title}}</h3>
-                <p>{{this.content}}</p>
-                <button class="edit-post" data-id="{{this.id}}">Edit</button>
-                <button class="delete-post" data-id="{{this.id}}">Delete</button>
-            </article>
+            <a href="#" class="post-title" data-id="{{this.id}}">
+          <h5>{{this.title}}</h5>
+        </a>
         {{/each}}
     </section>
 
     <form id="post-form" style="display:none;">
         <input type="text" name="title" placeholder="Post Title">
-        <textarea name="content" placeholder="Post Content"></textarea>
-        <button type="submit">Save</button>
+      <textarea name="content" placeholder="Post Content"></textarea>
+      <button type="submit">Save</button>
+      <button type="button" id="delete-post">Delete</button>
+      <button type="button" id="back-btn">Back</button>
     </form>
+</div>
 {{else}}
     <p>You need to <a href="/login">log in</a> to view this page.</p>
 {{/if}}
 
-<script>
-document.getElementById('new-post').addEventListener('click', () => {
-    const form = document.getElementById('post-form');
-    form.style.display = 'block';
-    form.onsubmit = async (event) => {
-        event.preventDefault();
-        const title = document.querySelector('[name="title"]').value.trim();
-        const content = document.querySelector('[name="content"]').value.trim();
-        if (title && content) {
-            const response = await fetch('/api/posts', {
-                method: 'POST',
-                body: JSON.stringify({ title, content }),
-                headers: { 'Content-Type': 'application/json' },
-            });
-            if (response.ok) {
-                document.location.reload();
-            } else {
-                alert('Failed to create post.');
-            }
-        }
-    };
-});
-
-document.querySelectorAll('.edit-post').forEach(button => {
-    button.addEventListener('click', async (event) => {
-        const id = event.target.getAttribute('data-id');
-        const response = await fetch(`/api/posts/${id}`);
-        if (!response.ok) {
-            alert('Failed to fetch post.');
-            return;
-        }
-        const post = await response.json();
-        const form = document.getElementById('post-form');
-        form.style.display = 'block';
-        document.querySelector('[name="title"]').value = post.title;
-        document.querySelector('[name="content"]').value = post.content;
-
-        // Remove any existing submit event listeners to prevent multiple handlers
-        const newForm = form.cloneNode(true);
-        form.parentNode.replaceChild(newForm, form);
-
-        newForm.onsubmit = async (event) => {
-            event.preventDefault();
-            const title = document.querySelector('[name="title"]').value.trim();
-            const content = document.querySelector('[name="content"]').value.trim();
-            if (title && content) {
-                const updateResponse = await fetch(`/api/posts/${id}`, {
-                    method: 'PUT',
-                    body: JSON.stringify({ title, content }),
-                    headers: { 'Content-Type': 'application/json' },
-                });
-                if (updateResponse.ok) {
-                    const updatedPost = await updateResponse.json();
-                    const postElement = document.querySelector(`article[data-id="${id}"]`);
-                    postElement.querySelector('h3').innerText = updatedPost.title;
-                    postElement.querySelector('p').innerText = updatedPost.content;
-                    newForm.style.display = 'none';
-                } else {
-                    alert('Failed to update post.');
-                }
-            }
-        };
-    });
-});
-
-document.querySelectorAll('.delete-post').forEach(button => {
-    button.addEventListener('click', async (event) => {
-        const id = event.target.getAttribute('data-id');
-        const response = await fetch(`/api/posts/${id}`, {
-            method: 'DELETE',
-        });
-        if (response.ok) {
-            document.querySelector(`article[data-id="${id}"]`).remove();
-        } else {
-            alert('Failed to delete post.');
-        }
-    });
-});
-</script>
+  <script src="/js/dashboard.js"></script>
