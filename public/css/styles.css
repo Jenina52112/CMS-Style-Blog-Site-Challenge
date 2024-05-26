@@ -79,7 +79,9 @@ form {
 }
 
 
-
+#content{
+    height: 300px;
+}
 
 
 form div {
