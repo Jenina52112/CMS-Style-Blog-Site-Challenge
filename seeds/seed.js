@@ -1,31 +1,23 @@
-const sequelize = require('../models').sequelize;
-const { User, Post } = require('../models');
+const sequelize = require('../config/connection');
+const seedUsers = require('./userSeeds');
+const seedPosts = require('./postSeeds');
+const seedComments = require('./commentSeeds');
 
-const seedDatabase = async () => {
-  await sequelize.sync({ force: true });
+const seedAll = async () => {
+  await sequelize.sync();
 
-  const users = await User.bulkCreate([
-    { username: 'user1', password: 'password1' },
-    { username: 'user2', password: 'password2' },
-  ], {
-    individualHooks: true,
-    returning: true,
-  });
+  console.log('\n----- DATABASE SYNCED -----\n');
 
-  await Post.bulkCreate([
-    {
-      title: 'Post 1',
-      content: 'Content for post 1',
-      user_id: users[0].id,
-    },
-    {
-      title: 'Post 2',
-      content: 'Content for post 2',
-      user_id: users[1].id,
-    },
-  ]);
+  await seedUsers();
+  console.log('\n----- USERS SEEDED -----\n');
+
+  await seedPosts();
+  console.log('\n----- POSTS SEEDED -----\n');
+
+  await seedComments();
+  console.log('\n----- COMMENTS SEEDED -----\n');
 
   process.exit(0);
 };
 
-seedDatabase();
+seedAll();

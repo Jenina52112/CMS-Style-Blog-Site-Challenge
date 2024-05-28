@@ -9,8 +9,6 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f4f4f4;
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
@@ -30,8 +28,7 @@ nav ul {
     display: flex;
     justify-content: flex-start;
     gap: 20px;
-    padding: 0;
-    margin: 0;
+
 }
 
 nav ul li {
@@ -109,9 +106,7 @@ form button {
     font-size: 16px;
 }
 
-form button:hover {
-    background-color: #555;
-}
+
 
 /* Posts styling */
 #posts {
@@ -135,7 +130,7 @@ form button:hover {
     border-radius: 4px;
 }
 
-.post-title h5:hover {
+.post-title h5:hover, form button:hover {
     background-color: gray;
 }
 
@@ -166,15 +161,13 @@ section div {
     margin-bottom: 10px;
 }
 
-section form {
-    margin-top: 10px;
-}
+ 
 
 section form textarea {
     height: 100px;
 }
 
-section form button {
+section form button, section form {
     margin-top: 10px;
 }
 
