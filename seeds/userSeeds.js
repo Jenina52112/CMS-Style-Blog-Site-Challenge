@@ -4,10 +4,12 @@ const userData = [
   {
     username: 'john_doe',
     password: 'password123',
+    user_id: 20,
   },
   {
     username: 'jane_doe',
     password: 'password123',
+    user_id: 10,
   },
 ];
 

@@ -3,14 +3,18 @@ const { Comment } = require('../models');
 const commentData = [
   {
     content: 'Great post!',
-    user_id: 2,
-    id: 1,
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: 17, // Assuming user with id 1 exists
+    id: 15 // Ensure this post exists
   },
   {
     content: 'Thanks for sharing!',
-    user_id: 1,
-    id: 2,
-  },
+    created_at: new Date(),
+    updated_at: new Date(),
+    user_id: 18, // Assuming user with id 2 exists
+    id: 16 // Ensure this post exists
+  }
 ];
 
 const seedComments = async () => {
