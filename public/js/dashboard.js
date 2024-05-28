@@ -1,14 +1,21 @@
+newPostbtn = document.getElementById('new-post');
+newPostform = document.getElementById('post-form');
+deleteBtn = document.getElementById('delete-post');
+backBtn = document.getElementById('back-btn');
+postList = document.getElementById('posts');
 
-document.getElementById('new-post').addEventListener('click', () => {
-  document.getElementById('post-form').style.display = 'block';
+
+
+newPostbtn.addEventListener('click', () => {
+  newPostform.style.display = 'block';
   document.querySelector('[name="title"]').value = '';
   document.querySelector('[name="content"]').value = '';
-  document.getElementById('delete-post').style.display = 'none'; // Hide delete button for new posts
-  document.getElementById('back-btn').style.display = 'none'; // Hide back button for new posts
-  document.getElementById('posts').style.display = 'none'; // Hide posts list
-  const form = document.getElementById('post-form');
-  form.style.display = 'block';
-  form.onsubmit = async (event) => {
+  deleteBtn.style.display = 'none'; // Hide delete button for new posts
+  backBtn.style.display = 'none'; // Hide back button for new posts
+  postList.style.display = 'none'; // Hide posts list
+  // const form = document.getElementById('post-form');
+  // form.style.display = 'block';
+  newPostform.onsubmit = async (event) => {
       event.preventDefault();
       const title = document.querySelector('[name="title"]').value.trim();
       const content = document.querySelector('[name="content"]').value.trim();
