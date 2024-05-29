@@ -2,7 +2,9 @@ const Sequelize = require('sequelize');
 require('dotenv').config(); // Load environment variables from a .env file
 
 // Create a new instance of Sequelize with the database configuration
-const sequelize = new Sequelize(
+const sequelize = process.env.JAWSDB_BLUE_URL
+? new Sequelize(process.env.JAWSDB_BLUE_URL)
+: new Sequelize(
   process.env.DB_NAME, // Database name
   process.env.DB_USER, // Database username
   process.env.DB_PASSWORD, // Database password
@@ -14,3 +16,7 @@ const sequelize = new Sequelize(
 );
 
 module.exports = sequelize; // Export the Sequelize instance
+
+
+require("dotenv").config();
+

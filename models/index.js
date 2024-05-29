@@ -1,17 +1,4 @@
 const sequelize = require('../config/connection')
-// const dotenv = require('dotenv');
-// dotenv.config();
-
-// const sequelize = new Sequelize(
-//   process.env.DB_NAME,
-//   process.env.DB_USER,
-//   process.env.DB_PASSWORD,
-//   {
-//     host: process.env.DB_HOST,
-//     dialect: 'mysql',
-//   }
-// );
-
 const User = require('./User')(sequelize, sequelize.DataTypes);
 const Post = require('./Post')(sequelize, sequelize.DataTypes);
 const Comment = require('./Comment')(sequelize, sequelize.DataTypes);
