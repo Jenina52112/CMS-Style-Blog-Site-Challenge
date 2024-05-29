@@ -1,7 +1,7 @@
 <article>
   <h1>{{title}}</h1>
-  <p>Created on {{createdAt}}</p>
-  <p>By {{user.username}}</p>
+  <i><p>Created on {{createdAt}}</p>
+  <p>By {{user.username}}</p></i>
   <p class="preWrap">{{content}}</p>
 </article>
 
@@ -10,7 +10,7 @@
   {{#each comments}}
     <div>
       <p class="preWrap">{{this.content}}</p>
-      <p>By {{this.user.username}} on {{this.createdAt}}</p>
+      <i><p>By {{this.user.username}} on {{this.createdAt}}</p></i>
     </div>
   {{/each}}
 
@@ -20,7 +20,7 @@
       <button type="submit">Submit</button>
     </form>
   {{else}}
-    <p><a href="/login">Log in</a> to leave a comment.</p>
+    <p class="centerThis"><a href="/login">Log in</a> to leave a comment.</p>
  {{/if}}
 </section>
 

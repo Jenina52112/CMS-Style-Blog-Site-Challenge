@@ -12,7 +12,7 @@
 
 a {
     text-decoration: none;
-    color: rgb(5, 111, 233);
+    color: rgb(7, 126, 134);
 }
 body {
     font-family: Arial, sans-serif;
@@ -74,6 +74,7 @@ form {
 }
 
 
+
 #new-post{
     font-size: 25px;
     width: 180px
@@ -115,8 +116,16 @@ form button {
     font-size: 16px;
 }
 
+i {
+    color: rgb(5, 111, 233);
 
+}
 
+.centerThis{
+    text-align: center;
+    font-size: 20px;
+    color: rgb(190, 13, 13);
+}
 /* Posts styling */
 #posts {
     display: block;
@@ -180,7 +189,7 @@ section form button, section form {
     margin-top: 10px;
 }
 
-h2{
+h1{
     font-size: 30px;
 }
 

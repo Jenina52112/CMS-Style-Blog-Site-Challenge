@@ -1,7 +1,7 @@
 {{#each posts}}
   <article>
-    <h2><a href="/post/{{this.id}}">{{this.title}}</a></h2>
-    <p>Created on {{this.createdAt}}</p>
-    <p>By {{this.user.username}}</p>
+    <h1><a href="/post/{{this.id}}">{{this.title}}</a></h1>
+   <i> <p>Created on {{this.createdAt}}</p>
+    <p>By {{this.user.username}}</p></i>
   </article>
 {{/each}}
