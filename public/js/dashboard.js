@@ -11,7 +11,7 @@ document.getElementById('new-post').addEventListener('click', () => {
   form.onsubmit = async (event) => {
       event.preventDefault();
       const title = document.querySelector('[name="title"]').value.trim();
-      const content = document.querySelector('[name="content"]').value.trim();
+      const content = document.querySelector('[name="content"]').value;
       if (title && content) {
           const response = await fetch('/api/posts', {
               method: 'POST',
@@ -44,7 +44,7 @@ document.querySelectorAll('.post-title').forEach(link => {
     document.getElementById('post-form').onsubmit = async (event) => {
       event.preventDefault();
       const title = document.querySelector('[name="title"]').value.trim();
-      const content = document.querySelector('[name="content"]').value.trim();
+      const content = document.querySelector('[name="content"]').value;
       if (title && content) {
         await fetch(`/api/posts/${id}`, {
           method: 'PUT',

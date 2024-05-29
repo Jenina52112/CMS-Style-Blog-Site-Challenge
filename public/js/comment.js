@@ -1,6 +1,6 @@
 document.getElementById('comment-form').addEventListener('submit', async (event) => {
     event.preventDefault();
-    const content = document.querySelector('[name="content"]').value.trim();
+    const content = document.querySelector('[name="content"]').value;
     const post_id = window.location.pathname.split('/').pop();
 
     if (content) {

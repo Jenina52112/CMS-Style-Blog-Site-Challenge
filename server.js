@@ -12,7 +12,7 @@ const PORT = process.env.PORT || 3000;
 
 const sess = {
   secret: process.env.SECRET_KEY,
-  cookie: { maxAge: 120000 },
+  cookie: { maxAge: 300000 }, //log out after 5mins
   saveUninitialized: true,
   store: new SequelizeStore({
     db: sequelize,
